@@ -6,12 +6,6 @@ import User from './models/user.js';
 
 import sequelize from './schema/utils/database.js';
 
-// try {
-//   await sequelize.authenticate();
-//   console.log('Connection has been established successfully.');
-// } catch (error) {
-//   console.error('Unable to connect to the database:', error);
-// }
 
 const app = express();
 
@@ -19,6 +13,7 @@ app.use('/graphql', expressGraphQL.graphqlHTTP({
 	schema,
 	graphiql: true
 }));
+
 
 Notes.belongsTo(User, {constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Notes);

@@ -39,6 +39,9 @@ const User = sequelize.define('user', {
 	password: {
 		type: Sequelize.STRING,
 		allowNull: false,
+		defaultScope: {
+			rawAttributes: { exclude: ['password'] },
+		},
 		set(value) {
       const hash = bcrypt.hashSync(value, 10);
       this.setDataValue('password', hash);
