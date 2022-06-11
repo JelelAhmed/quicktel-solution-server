@@ -1,6 +1,7 @@
 
 import sequelize from '../schema/utils/database.js';
 import Sequelize from 'sequelize';
+import bcrypt from 'bcrypt'
 
 const User = sequelize.define('user', {
 	id: {
@@ -37,9 +38,12 @@ const User = sequelize.define('user', {
 	},
 	password: {
 		type: Sequelize.STRING,
-		allowNull: false
+		allowNull: false,
+		set(value) {
+      const hash = bcrypt.hashSync(value, 10);
+      this.setDataValue('password', hash);
+		}
 	}
-
 });
 
 export default User;
