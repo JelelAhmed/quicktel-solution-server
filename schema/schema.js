@@ -1,12 +1,22 @@
 
-import { graphql, GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
+import { graphql, GraphQLObjectType, GraphQLSchema, GraphQLNonNull, GraphQLInt, GraphQLString, buildSchema, isRequiredArgument } from "graphql";
 import _ from 'lodash';
+import pkg from 'graphql-sequelize';
+const { resolver } = pkg;
+import Sequelize from 'sequelize';
+import sequelize from "./utils/database.js";
+import Notes from "../models/notes.js";
+import User from '../models/user.js'
 
 
-const users = [
-	{ id: '23', firstName: 'samanthan', lastName: 'fred', email: 'abduljelelahmed'},
-	{ id: '22', firstName: 'salman', lastName: 'abdul', email: 'abduljelelahmed@gmail.com'}
-]
+// const resolverFn = resolver(User);
+
+
+
+
+let Task = sequelize.define('task', {
+  title: Sequelize.STRING
+});
 
 
 const UserType = new GraphQLObjectType({
@@ -21,21 +31,73 @@ const UserType = new GraphQLObjectType({
 });
 
 
+const TaskType = new GraphQLObjectType({
+  name: 'Task',
+  description: 'A task',
+  fields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'The id of the task.',
+    },
+    title: {
+      type: GraphQLString,
+      description: 'The title of the task.',
+    },
+		content: {
+      type: GraphQLString,
+      description: 'The title of the task.',
+    }
+
+  }
+});
+
+
 
 const RootQuery = new GraphQLObjectType({
 	name: 'RootQuery', 
 	fields: {
 		user: {
-			type: UserType,
+			type: TaskType,
 			args: { id: { type: GraphQLString } },
-			resolve(parentValue, args) {
-				return _.find(users, { id: args.id});
-			}
+			resolve: resolver(Notes)
 		}
 	}
 });
 
 
- export default new GraphQLSchema({
+const mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    createUser: {
+      type: UserType,
+      args: {
+        firstName: { type: new GraphQLNonNull(GraphQLString) },
+				lastName: { type: new GraphQLNonNull(GraphQLString) },
+				email: { type: new GraphQLNonNull(GraphQLString) },
+				password: { type: new GraphQLNonNull(GraphQLString) }
+      },
+      resolve: (parentValue, { 
+				firstName, lastName, email, password }, info) => {
+				 return	User.create({
+							firstName,
+							lastName,
+							email,
+							password
+						})
+						.then(user => {
+							return user
+						})
+						.catch(err => {
+							console.log(err.message)
+							return err;
+						});
+					}
+    },
+  }
+});
+
+
+ export default new GraphQLSchema ({
+	mutation,
 	query: RootQuery
 });
