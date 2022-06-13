@@ -25,7 +25,7 @@ app.use('/graphql', expressGraphQL.graphqlHTTP({
 Notes.belongsTo(User, {constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Notes);
 
-
+app.get()
 
 
 
@@ -36,7 +36,7 @@ sequelize.sync()
 	.catch(err => {
 		console.log(err)
 	})
-
+	app.get('/', (req, res) => { res.send('it is working')});
 	app.listen(process.env.PORT || 4000, () => {
 		console.log(`App is run on ${process.env.PORT}`);
 	});
