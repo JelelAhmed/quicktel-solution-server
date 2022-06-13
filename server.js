@@ -5,6 +5,7 @@ import schema from './schema/schema.js';
 import Notes from './models/notes.js';
 import User from './models/user.js';
 import Sequelize from 'sequelize';
+import { config } from 'dotenv';
 
 import sequelize from './utils/database.js';
 
@@ -34,6 +35,9 @@ sequelize.sync()
 	.catch(err => {
 		console.log(err)
 	})
+
+
+	
 	app.get('/', (req, res) => { res.send('it is working')});
 	app.listen(process.env.PORT || 4000, () => {
 		console.log(`App is run on ${process.env.PORT}`);
