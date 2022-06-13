@@ -5,7 +5,7 @@ import schema from './schema/schema.js';
 import Notes from './models/notes.js';
 import User from './models/user.js';
 import Sequelize from 'sequelize';
-import { config } from 'dotenv';
+import 'dotenv/config';
 
 import sequelize from './utils/database.js';
 
