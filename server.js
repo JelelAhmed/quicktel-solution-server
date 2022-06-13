@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import expressGraphQL from 'express-graphql'
 import schema from './schema/schema.js';
 import Notes from './models/notes.js';
@@ -7,7 +8,12 @@ import User from './models/user.js';
 import sequelize from './schema/utils/database.js';
 
 
+
 const app = express();
+
+app.use(cors({
+	origin: '*'
+}));
 
 app.use('/graphql', expressGraphQL.graphqlHTTP({
 	schema,

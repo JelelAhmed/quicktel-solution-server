@@ -10,16 +10,10 @@ import Notes from "../models/notes.js";
 import User from '../models/user.js'
 
 
-
-let Task = sequelize.define('task', {
-  title: Sequelize.STRING
-});
-
-
 const NoteType = new GraphQLObjectType({
   name: 'Note',
-  description: 'A task',
-  fields: {
+  description: 'A note',
+  fields: () => ({
     id: {
       type: new GraphQLNonNull(GraphQLInt),
       description: 'The id of the task.',
@@ -31,16 +25,37 @@ const NoteType = new GraphQLObjectType({
 		content: {
       type: GraphQLString,
       description: 'The title of the task.',
+    },
+		userId: {
+			type: GraphQLInt,
+			description: 'Author id'
+		},
+		user: {
+      type: new GraphQLList(UserType),
+			args: { id: {type: GraphQLInt } },
+      resolve: async (parentValue, {id}) => {
+				return await User.findAll({
+					where: {
+						id: parentValue.userId
+					}
+					})
+					.then(user => {
+						return user;
+					})
+					.catch(err => {
+						return err;
+					})
+      },
+			description: 'Author of the note',
     }
-
-  }
+  })
 });
 
 
 const UserType = new GraphQLObjectType({
 	name: 'User',
 	fields: {
-		id: {type: GraphQLString},
+		id: {type: GraphQLInt},
 		firstName: {type: GraphQLString},
 		lastName: {type: GraphQLString},
 		email: { type: GraphQLString },
@@ -56,6 +71,9 @@ const UserType = new GraphQLObjectType({
 					})
 					.then(notes => {
 						return notes;
+					})
+					.catch(err => {
+						return err;
 					})
       }
     }
@@ -83,6 +101,7 @@ const RootQuery = new GraphQLObjectType({
 					})
 			}
 		},
+		
 		note: {
 		 type: new GraphQLList(NoteType),
 			args: { id: { type: GraphQLInt } },
@@ -99,9 +118,29 @@ const RootQuery = new GraphQLObjectType({
 						return err;
 					})
 			}
-		}
+		},
+
+		getNotes: {
+			type: new GraphQLList(NoteType),
+			 args: { count: { type: GraphQLInt } },
+			 resolve: async (parentValue, { count }) => {
+				 return await Notes.findAll({
+					limit: count,
+					include: [{
+						model: User, required: true,
+					}]
+				 })
+					 .then(notes => {
+						 return notes;
+					 })
+					 .catch(err => {
+						 return err;
+					 })
+			 }
+		 }
 	}
 });
+
 
 
 const mutation = new GraphQLObjectType({
