@@ -4,8 +4,9 @@ import expressGraphQL from 'express-graphql'
 import schema from './schema/schema.js';
 import Notes from './models/notes.js';
 import User from './models/user.js';
+import Sequelize from 'sequelize';
 
-import sequelize from './schema/utils/database.js';
+import sequelize from './utils/database.js';
 
 
 
@@ -23,6 +24,9 @@ app.use('/graphql', expressGraphQL.graphqlHTTP({
 
 Notes.belongsTo(User, {constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Notes);
+
+
+
 
 
 sequelize.sync()

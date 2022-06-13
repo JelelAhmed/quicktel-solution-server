@@ -1,11 +1,8 @@
 
 import { graphql, GraphQLObjectType, GraphQLSchema, GraphQLNonNull, GraphQLInt, GraphQLString, GraphQLList } from "graphql";
-import _ from 'lodash';
-import pkg from 'graphql-sequelize';
-const { resolver } = pkg;
 import Sequelize from 'sequelize';
 import bcrypt from 'bcrypt'
-import sequelize from "./utils/database.js";
+import sequelize from "../utils/database.js";
 import Notes from "../models/notes.js";
 import User from '../models/user.js'
 
@@ -16,15 +13,15 @@ const NoteType = new GraphQLObjectType({
   fields: () => ({
     id: {
       type: new GraphQLNonNull(GraphQLInt),
-      description: 'The id of the task.',
+      description: 'The id of the note.',
     },
     title: {
       type: GraphQLString,
-      description: 'The title of the task.',
+      description: 'The title of the note.',
     },
 		content: {
       type: GraphQLString,
-      description: 'The title of the task.',
+      description: 'The title of the note.',
     },
 		userId: {
 			type: GraphQLInt,
@@ -122,13 +119,16 @@ const RootQuery = new GraphQLObjectType({
 
 		getNotes: {
 			type: new GraphQLList(NoteType),
-			 args: { count: { type: GraphQLInt } },
-			 resolve: async (parentValue, { count }) => {
+			 args: { limit: { type: GraphQLInt } },
+			 resolve: async (parentValue, { limit }) => {
 				 return await Notes.findAll({
-					limit: count,
+					limit: limit,
 					include: [{
 						model: User, required: true,
-					}]
+					}],
+					order: [
+						['createdAt', 'DESC']
+					],
 				 })
 					 .then(notes => {
 						 return notes;
@@ -188,12 +188,11 @@ const mutation = new GraphQLObjectType({
 						if(user && bcrypt.compareSync(password, user.password)) {
 							return user;
 						}
-						else {
-							return new Error('Invalid Email or Password');
-						}
-					})
+							else {
+								return new Error('Invalid Email or Password');
+							}
+						})
 					.catch(err => {
-						console.log(err.message)
 						return err;
 					});
 				}

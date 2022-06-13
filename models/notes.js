@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
 
-import sequelize from "../schema/utils/database.js";
+import sequelize from "../utils/database.js";
 
 const Notes = sequelize.define('notes', {
 	id: {

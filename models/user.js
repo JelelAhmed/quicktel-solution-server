@@ -1,5 +1,4 @@
-
-import sequelize from '../schema/utils/database.js';
+import sequelize from '../utils/database.js';
 import Sequelize from 'sequelize';
 import bcrypt from 'bcrypt'
 
