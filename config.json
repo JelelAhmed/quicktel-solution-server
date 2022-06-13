@@ -17,6 +17,7 @@
     "username": "root",
     "password": null,
     "database": "database_production",
+		"host": "postgres://wziwsckgqivdjc:df186e9910e831973283eb8d655cc41e003e83704b4ef183b13a614c69d8c8e0@ec2-3-211-6-217.compute-1.amazonaws.com:5432/dbjkr7h8p9405e",
     "dialect": "postgres",
     "operatorsAliases": false,
     "use_env_variable": "DATABASE_URL",
