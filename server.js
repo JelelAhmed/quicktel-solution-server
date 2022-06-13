@@ -25,8 +25,6 @@ app.use('/graphql', expressGraphQL.graphqlHTTP({
 Notes.belongsTo(User, {constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Notes);
 
-app.get()
-
 
 
 sequelize.sync()
