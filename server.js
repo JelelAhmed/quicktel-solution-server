@@ -13,9 +13,7 @@ import sequelize from './utils/database.js';
 
 const app = express();
 
-app.use(cors({
-	origin: '*'
-}));
+app.use(cors());
 
 app.use('/graphql', expressGraphQL.graphqlHTTP({
 	schema,
@@ -37,7 +35,6 @@ sequelize.sync()
 	})
 
 
-	
 	app.get('/', (req, res) => { res.send('it is working')});
 	app.listen(process.env.PORT || 4000, () => {
 		console.log(`App is run on ${process.env.PORT}`);
