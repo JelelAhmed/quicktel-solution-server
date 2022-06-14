@@ -1,29 +1,32 @@
 import Sequelize from 'sequelize';
 
-const sequelize = new Sequelize('quicktel', 'postgres', '1994', {
+// const sequelize = new Sequelize('quicktel', 'postgres', '1994', {
+// 	dialect: 'postgres',
+// 	host: 'localhost'
+// });
+
+let sequelize = new Sequelize({
 	dialect: 'postgres',
-	host: 'localhost'
+	connection: {
+    connectionString: process.env.DATABASE_URL,
+	},
+	dialectOptions: {
+		ssl: {
+			require: true,
+			rejectUnauthorized: false
+		}
+	}
+}
+);
+
+sequelize
+.authenticate()
+.then(() => {
+	console.log('Connection has been established successfully.');
+})
+.catch(err => {
+	console.error('Unable to connect to the database:', err);
 });
 
-
-
-// if (process.env.DATABASE_URL) {
-// 	// the application is executed on Heroku ... use the postgres         database
-//   sequelize = new Sequelize(process.env.DATABASE_URL,
-// {
-//  dialect: "postgres",
-//  protocol: "postgres",
-//  port: 5432,
-//  host: "<heroku host>",
-//  logging: true //false
-// });
-// } else {
-// // the application is executed on the local machine ... use mysql
-// sequelize =new Sequelize("postgres://<username>:<password>@<host>:  <port>/<database>",
-// 	{
-// 	dialect: "postgres"
-// 	}
-// 	);
-// }
 
 export default sequelize;
