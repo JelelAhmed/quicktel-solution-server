@@ -1,11 +1,10 @@
-import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import expressGraphQL from 'express-graphql'
 import schema from './schema/schema.js';
 import Notes from './models/notes.js';
 import User from './models/user.js';
-import Sequelize from 'sequelize';
+// import Sequelize from 'sequelize';
 
 import sequelize from './utils/database.js';
 
@@ -28,7 +27,7 @@ User.hasMany(Notes);
 
 sequelize.sync()
 	.then(result => {
-		// console.log(result);
+		console.log(result);
 	})
 	.catch(err => {
 		console.log(err)
